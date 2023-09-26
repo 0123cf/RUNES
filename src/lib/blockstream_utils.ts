@@ -3,19 +3,21 @@ import axios, { AxiosResponse } from "axios";
 
 export const OPENAPI_URL_MAINNET = 'https://blockstream.info/api';
 export const OPENAPI_URL_TESTNET = 'https://blockstream.info/testnet/api';
-export const baseURL = OPENAPI_URL_TESTNET
+// export const OPENAPI_URL_MAINNET = 'https://mempool.space/api';
+// export const OPENAPI_URL_TESTNET = 'https://mempool.space/testnet/api';
+// export const baseURL = OPENAPI_URL_TESTNET
 
-const blockstream = new axios.Axios({
-    baseURL,
-});
+// const blockstream = new axios.Axios({
+//     baseURL,
+// });
 
-export async function waitUntilUTXO(address: string) {
+export async function waitUntilUTXO(address: string, isMiannet = false) {
     return new Promise<IUTXO[]>((resolve, reject) => {
         let intervalId: any;
         const checkForUtxo = async () => {
             try {
-                const response: AxiosResponse<string> = await blockstream.get(`/address/${address}/utxo`);
-                const data: IUTXO[] = response.data ? JSON.parse(response.data) : undefined;
+                const response: AxiosResponse<string> = await axios.get((isMiannet ? OPENAPI_URL_MAINNET : OPENAPI_URL_TESTNET) + `/address/${address}/utxo`);
+                const data: IUTXO[] = response.data ? (isMiannet ? response.data : JSON.parse(response.data)) : undefined;
                 console.log(data);
                 if (data.length > 0) {
                     resolve(data);
@@ -30,8 +32,8 @@ export async function waitUntilUTXO(address: string) {
     });
 }
 
-export async function broadcast(txHex: string) {
-    const response: AxiosResponse<string> = await blockstream.post('/tx', txHex);
+export async function broadcast(txHex: string, isMiannet = false) {
+    const response: AxiosResponse<string> = await axios.post((isMiannet ? OPENAPI_URL_MAINNET : OPENAPI_URL_TESTNET) +  '/tx', txHex);
     return response.data;
 }
 

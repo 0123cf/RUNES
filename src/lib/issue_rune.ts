@@ -25,7 +25,8 @@ export const issue_rune = async ({
   recv,
   is_send = true,
   is_decode = false,
-  fee_value
+  fee_value,
+  network = networks.testnet
 }: {
   symbol: string;
   decimals: number;
@@ -35,8 +36,8 @@ export const issue_rune = async ({
   is_decode?: boolean;
   recv?: string;
   fee_value: number;
+  network?: networks.Network
 }) => {
-  const network = networks.testnet;
 
   if(supply <= 0){
     return console.error('supply cannot be less than 0')
@@ -57,7 +58,7 @@ export const issue_rune = async ({
     return console.log("payerAddress error");
   }
 
-  const utxos = await waitUntilUTXO(payerAddress);
+  const utxos = await waitUntilUTXO(payerAddress, network === networks.bitcoin);
   console.log(`Using UTXO ${utxos[0].txid}:${utxos[0].vout}`);
 
   const psbt = new Psbt({ network });
@@ -84,7 +85,7 @@ export const issue_rune = async ({
   const tx = psbt.extractTransaction();
   console.log(`Broadcasting Transaction Hex: ${tx.toHex()}`);
   if (is_send) {
-    const txid = await broadcast(tx.toHex());
+    const txid = await broadcast(tx.toHex(), network === networks.bitcoin);
     console.log(`Success! Txid is ${txid}`);
   }
   if (is_decode) {
