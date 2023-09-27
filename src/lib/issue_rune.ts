@@ -26,7 +26,9 @@ export const issue_rune = async ({
   is_send = true,
   is_decode = false,
   fee_value,
-  network = networks.testnet
+  network = networks.testnet,
+  is_mint = false,
+  p = 'R',
 }: {
   symbol: string;
   decimals: number;
@@ -36,6 +38,8 @@ export const issue_rune = async ({
   is_decode?: boolean;
   recv?: string;
   fee_value: number;
+  is_mint?: boolean;
+  p?: string;
   network?: networks.Network
 }) => {
 
@@ -69,7 +73,7 @@ export const issue_rune = async ({
     tapInternalKey: toXOnly(keypair.publicKey),
   });
 
-  const opReturnOutput = encode_issue(supply, symbol, decimals);
+  const opReturnOutput = encode_issue(supply, symbol, decimals, is_mint, p);
   psbt.addOutput({
     script: opReturnOutput!,
     value: 0,

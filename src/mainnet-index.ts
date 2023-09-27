@@ -1,5 +1,4 @@
 import { networks } from "bitcoinjs-lib";
-import { decode_issue } from "./lib/decode";
 import { issue_rune } from "./lib/issue_rune";
 import * as dotenv from "dotenv";
 dotenv.config();

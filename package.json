@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc",
     "start": "yarn build && node dist/index.js",
-    "mainnet-start": "yarn build && node dist/mainnet-index.js"
+    "mainnet-start": "yarn build && node dist/mainnet-index.js",
+    "test": "yarn build && node dist/test/index.js"
   }
 }

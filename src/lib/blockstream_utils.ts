@@ -16,9 +16,11 @@ export async function waitUntilUTXO(address: string, isMiannet = false) {
         let intervalId: any;
         const checkForUtxo = async () => {
             try {
-                const response: AxiosResponse<string> = await axios.get((isMiannet ? OPENAPI_URL_MAINNET : OPENAPI_URL_TESTNET) + `/address/${address}/utxo`);
-                const data: IUTXO[] = response.data ? (isMiannet ? response.data : JSON.parse(response.data)) : undefined;
-                console.log(data);
+                const response: AxiosResponse<IUTXO[]> = await axios.get((isMiannet ? OPENAPI_URL_MAINNET : OPENAPI_URL_TESTNET) + `/address/${address}/utxo`);
+                console.log('---response.data', response.data)
+                // const data: IUTXO[] = response.data ? (isMiannet ? response.data : JSON.parse(response.data)) : undefined;
+                const data: IUTXO[] = response.data ?? []
+                // console.log(data);
                 if (data.length > 0) {
                     resolve(data);
                     clearInterval(intervalId);
